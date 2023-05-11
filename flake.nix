@@ -11,6 +11,11 @@
       url = "github:CosmWasm/cosmwasm";
       flake = false;
     };
+    # TODO: add nixos test that spins up a cosmwasm chain and uploads a contract via wasmd
+    # cw-plus-src = {
+    #   url = "github:CosmWasm/cw-plus";
+    #   flake = false;
+    # };
   };
 
   outputs = {
@@ -53,6 +58,7 @@
             nativeBuildInputs = [ pkgs.pkg-config ];
             PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
           };
+
         in {
           checks = {};
 
@@ -60,6 +66,13 @@
 
           packages = {
             inherit cosmwasm-check;
+          };
+
+          apps = {
+            cosmwasm-check = {
+              type = "app";
+              program = "${self.packages.${system}.cosmwasm-check}/bin/cosmwasm-check";
+            };
           };
 
           devShells.default = pkgs.mkShell {
