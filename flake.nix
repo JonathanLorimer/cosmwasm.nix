@@ -30,7 +30,7 @@
     flake-utils.lib.eachSystem
       [ "x86_64-linux"
         "aarch64-linux"
-        "x86-64-darwin"
+        "x86_64-darwin"
         "aarch64-darwin"
       ]
       (system:
@@ -59,8 +59,13 @@
             PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
           };
 
+          wasmd = cosmos.packages.${system}.wasmd_next;
+
         in {
-          checks = {};
+          checks = {
+            inherit (self.packages.${system}) cosmwasm-check;
+            inherit wasmd;
+          };
 
           formatter = pkgs.alejandra;
 
@@ -80,7 +85,7 @@
               binaryen
               rustToolchain
               cosmwasm-check
-              cosmos.packages.${system}.wasmd_next
+              wasmd
             ];
           };
         });
